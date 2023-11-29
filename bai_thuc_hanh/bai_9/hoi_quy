@@ -1,0 +1,44 @@
+import math
+
+def tinh_do_lech_chuan(arr, mean):
+    sum = 0
+    for i in range(len(arr)):
+        sum += (arr[i] - mean) ** 2
+    return math.sqrt(sum / len(arr))
+
+def tinh_trung_binh(arr):
+    return sum(arr) / len(arr)
+
+def hoi_quy_tuyen_tinh(x, y):
+    num_samples = len(x)
+    sum_x = sum(x)
+    sum_y = sum(y)
+    sum_xy = sum([x[i] * y[i] for i in range(num_samples)])
+    sum_xx = sum([x[i] ** 2 for i in range(num_samples)])
+
+    b1 = (num_samples * sum_xy - sum_x * sum_y) / (num_samples * sum_xx - sum_x ** 2)
+    b0 = (sum_y - b1 * sum_x) / num_samples
+
+    return b0, b1
+
+x = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+y = [2, 4, 5, 7, 8, 10, 11, 13, 14, 16]
+
+b0, b1 = hoi_quy_tuyen_tinh(x, y)
+mean_x = tinh_trung_binh(x)
+mean_y = tinh_trung_binh(y)
+do_lech_chuan_x = tinh_do_lech_chuan(x, mean_x)
+do_lech_chuan_y = tinh_do_lech_chuan(y, mean_y)
+
+# Tính tương quan
+sum_xy = sum([(x[i] - mean_x) * (y[i] - mean_y) for i in range(len(x))])
+sum_x2 = sum([(x[i] - mean_x) ** 2 for i in range(len(x))])
+sum_y2 = sum([(y[i] - mean_y) ** 2 for i in range(len(y))])
+correlation = sum_xy / math.sqrt(sum_x2 * sum_y2)
+
+print(f"Phuong trinh hoi quy: y = {b0:.2f} + {b1:.2f} * x")
+print(f"Do lech chuan cua x: {do_lech_chuan_x:.2f}")
+print(f"Do lech chuan cua y: {do_lech_chuan_y:.2f}")
+print(f"Tuong quan giua x va y: {correlation:.2f}")
+print(f"Trung binh cua x: {mean_x:.2f}")
+print(f"Trung binh cua y: {mean_y:.2f}")

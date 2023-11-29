@@ -1,0 +1,72 @@
+#include <graphics.h>
+#include <iostream>
+
+void drawMenu(int x, int y, std::string menuItems[], int itemCount) {
+    int i;
+    int menuItemHeight = 30;
+    int menuWidth = 200;
+    int menuHeight = itemCount * menuItemHeight;
+    int textMargin = 10;
+    
+    setfillstyle(SOLID_FILL, WHITE);
+    bar(x, y, x + menuWidth, y + menuHeight);
+    
+    setcolor(BLACK);
+    setbkcolor(WHITE);
+    settextjustify(LEFT_TEXT, CENTER_TEXT);
+    settextstyle(BOLD_FONT, HORIZ_DIR, 3);
+    
+    for (i = 0; i < itemCount; i++) {
+        int menuItemX = x + textMargin;
+        int menuItemY = y + (i * menuItemHeight) + (menuItemHeight / 2);
+        outtextxy(menuItemX, menuItemY, menuItems[i].c_str());
+    }
+}
+
+int getMenuSelection(int x, int y, int itemCount) {
+    int menuItemHeight = 30;
+    int menuWidth = 200;
+    int menuHeight = itemCount * menuItemHeight;
+    int textMargin = 10;
+    int selection = -1;
+    int mouseX, mouseY;
+    int i;
+    
+    while (1) {
+        if (ismouseclick(WM_LBUTTONDOWN)) {
+            clearmouseclick(WM_LBUTTONDOWN);
+            getmouseclick(WM_LBUTTONDOWN, mouseX, mouseY);
+            
+            if (mouseX >= x && mouseX <= x + menuWidth && mouseY >= y && mouseY <= y + menuHeight) {
+                selection = (mouseY - y) / menuItemHeight;
+                break;
+            }
+        }
+    }
+    
+    return selection;
+}
+
+int main() {
+    int gd = DETECT, gm;
+    initgraph(&gd, &gm, "");
+
+    std::string menuItems[] = { "Option 1", "Option 2", "Option 3" };
+    int itemCount = sizeof(menuItems) / sizeof(menuItems[0]);
+
+    int screenWidth = getmaxwidth();
+    int screenHeight = getmaxheight();
+    int menuX = (screenWidth - 200) / 2;
+    int menuY = (screenHeight - (itemCount * 30)) / 2;
+
+    drawMenu(menuX, menuY, menuItems, itemCount);
+
+    int selection = getMenuSelection(menuX, menuY, itemCount);
+
+    cleardevice();
+    outtextxy(screenWidth / 2, screenHeight / 2, menuItems[selection].c_str());
+
+    getch();
+    closegraph();
+    return 0;
+}
